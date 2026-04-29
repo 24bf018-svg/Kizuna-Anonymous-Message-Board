@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">   
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+        body{ 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: pink;
+        }
+        input{
+            width: 200px;
+            height: 30px;
+            margin-top: 15px;
+        }
+        ul{
+            font-size: 30px;
+        }
+</style>
+<title>Kizuna Board</title>
+</head>
+<body>
+<h1> Kizuna board</h1>
+<input type="text" placeholder="Write your worries here">
+<button>Submit</button>
+<ul></ul>
+ 
+    <!-- Firebase SDK -->
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, orderBy, query } 
+            from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+ 
+        // 🔴 Replace these with your own Firebase config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+ 
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+ 
+        const btnEl = document.querySelector("button");
+        const inputEl = document.querySelector("input");
+        const listEl = document.querySelector("ul");
+ 
+        // Listen for real-time updates from Firestore
+        const q = query(collection(db, "worries"), orderBy("timestamp", "desc"));
+        onSnapshot(q, (snapshot) => {
+            listEl.innerHTML = "";
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                listEl.innerHTML += `<li>${data.text}</li>`;
+            });
+        });
+ 
+        // Submit new worry
+        btnEl.addEventListener('click', async () => {
+            const inputValue = inputEl.value.trim();
+            if (inputValue === "") return;
+ 
+            await addDoc(collection(db, "worries"), {
+                text: inputValue,
+                timestamp: new Date()
+            });
+ 
+            inputEl.value = "";
+        });
+</script>
+</body>
+</html>
