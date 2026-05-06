@@ -196,6 +196,62 @@
       display: block;
     }
 
+    .password-screen {
+      position: fixed;
+      inset: 0;
+      background-color: #fff7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .password-box {
+      background: white;
+      padding: 32px;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      border: 1px solid #f0dce7;
+    }
+
+    .password-box h2 {
+      margin-top: 0;
+      font-size: 26px;
+    }
+
+    .password-box p {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .password-box input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      font-size: 18px;
+      text-align: center;
+      margin: 16px 0;
+    }
+
+    .password-box button {
+      background-color: #ec4899;
+      color: white;
+      width: 100%;
+      padding: 14px;
+      border-radius: 999px;
+    }
+
+    .password-error {
+      color: #dc2626;
+      font-size: 14px;
+      min-height: 20px;
+      margin-top: 10px;
+    }
+
     @media (max-width: 700px) {
       header {
         flex-direction: column;
@@ -217,6 +273,24 @@
 </head>
 
 <body>
+  <div class="password-screen" id="passwordScreen">
+    <div class="password-box">
+      <h2>Admin Password</h2>
+      <p>Please enter the 4-digit password.</p>
+
+      <input
+        type="password"
+        id="adminPassword"
+        maxlength="4"
+        placeholder="Enter password"
+      >
+
+      <button id="passwordBtn">Enter</button>
+
+      <div class="password-error" id="passwordError"></div>
+    </div>
+  </div>
+
   <header>
     <a href="index.html" class="logo">
       <img src="./logo.png" class="logo-img" alt="Kizuna logo">
@@ -280,6 +354,28 @@
     const reportsList = document.getElementById("reportsList");
     const postsList = document.getElementById("postsList");
     const messageBox = document.getElementById("messageBox");
+
+    const correctPassword = "1234";
+
+    const passwordScreen = document.getElementById("passwordScreen");
+    const adminPassword = document.getElementById("adminPassword");
+    const passwordBtn = document.getElementById("passwordBtn");
+    const passwordError = document.getElementById("passwordError");
+
+    passwordBtn.addEventListener("click", () => {
+      if (adminPassword.value === correctPassword) {
+        passwordScreen.style.display = "none";
+      } else {
+        passwordError.textContent = "Wrong password.";
+        adminPassword.value = "";
+      }
+    });
+
+    adminPassword.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        passwordBtn.click();
+      }
+    });
 
     let postsMap = {};
 
@@ -372,7 +468,7 @@
             Target ID: ${report.targetId || "No target ID"}
           </div>
 
-          <p class="post-text">${postText}</p>
+          <p class="post-text"></p>
 
           <div class="small">
             Details: ${report.details || "No details"}
@@ -383,6 +479,8 @@
             <button class="safe-btn">Mark Reviewed</button>
           </div>
         `;
+
+        card.querySelector(".post-text").textContent = postText;
 
         const deleteBtn = card.querySelector(".delete-btn");
         const reviewedBtn = card.querySelector(".safe-btn");
@@ -424,7 +522,7 @@
             <div class="small">${formatDate(post.timestamp)}</div>
           </div>
 
-          <p class="post-text">${post.text || ""}</p>
+          <p class="post-text"></p>
 
           <div class="small">
             I hear you: ${post.hearCount || 0}<br>
@@ -435,6 +533,8 @@
             <button class="delete-btn">Delete Post</button>
           </div>
         `;
+
+        card.querySelector(".post-text").textContent = post.text || "";
 
         const deleteBtn = card.querySelector(".delete-btn");
 
