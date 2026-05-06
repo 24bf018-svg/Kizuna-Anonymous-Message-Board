@@ -3,418 +3,198 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kizuna Board</title>
+  <title>Kizuna</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      font-family: Arial, "Helvetica Neue", sans-serif;
-      background: #fdf1f7;
-      color: #222;
-    }
-
-    .page {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 40px 16px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 560px;
-    }
-
-    .page-title {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .page-title h1 {
-      margin: 0;
-      font-size: 30px;
-      font-weight: 700;
+      font-family: Arial, sans-serif;
+      background-color: #ffeff8;
       color: #1f2937;
+      min-height: 100vh;
     }
 
-    .page-title p {
-      margin-top: 8px;
-      color: #6b7280;
-      font-size: 14px;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-      border: 1px solid #f0e3ea;
-    }
-
-    .section-label {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: #374151;
-    }
-
-    .required {
-      color: #ff4d6d;
-    }
-
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-
-    .category-btn {
-      border: 1px solid #e5e7eb;
-      background: #f9fafb;
-      border-radius: 12px;
-      padding: 12px 8px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: 0.2s;
-      text-align: center;
-      color: #374151;
-    }
-
-    .category-btn:hover {
-      background: #fce7f3;
-      border-color: #f9a8d4;
-    }
-
-    .category-btn.active {
-      background: #fce7f3;
-      border-color: #ec4899;
-      color: #be185d;
-      font-weight: 700;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 150px;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      padding: 16px;
-      font-size: 15px;
-      resize: vertical;
-      outline: none;
-      background: #ffffff;
-      line-height: 1.6;
-    }
-
-    textarea:focus {
-      border-color: #ec4899;
-      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.12);
-    }
-
-    .textarea-footer {
-      margin-top: 8px;
+    header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
-      color: #6b7280;
+      padding: 25px 12%;
     }
 
-    .submit-btn {
-      width: 100%;
-      margin-top: 18px;
-      border: none;
-      border-radius: 16px;
-      background: #ec4899;
-      color: white;
-      font-size: 16px;
-      font-weight: 700;
-      padding: 16px;
-      cursor: pointer;
-      transition: 0.2s;
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: #1f2937;
     }
 
-    .submit-btn:hover {
-      background: #db2777;
-    }
-
-    .submit-btn:disabled {
-      background: #f9a8d4;
-      cursor: not-allowed;
-    }
-
-    .guideline {
-      margin-top: 16px;
-      text-align: center;
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    .guideline a {
-      color: #ec4899;
+    nav a {
       text-decoration: none;
-      font-weight: 600;
+      margin-left: 20px;
+      color: #1f2937;
+      font-weight: bold;
+      padding: 12px 20px;
+      border-radius: 12px;
     }
 
-    .message {
-      margin-top: 16px;
-      font-size: 14px;
+    nav a:hover {
+      background-color: #ffe4f1;
+      color: #d63384;
+    }
+
+    .post-nav {
+      background-color: #ec4899;
+      color: white;
+      border-radius: 30px;
+    }
+
+    .hero {
       text-align: center;
-      min-height: 20px;
+      padding: 120px 20px;
     }
 
-    .message.success {
-      color: #15803d;
-    }
-
-    .message.error {
-      color: #dc2626;
-    }
-
-    .post-list {
-      margin-top: 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .post-item {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 16px;
-      border: 1px solid #f0e3ea;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-    }
-
-    .post-category {
+    .small-label {
       display: inline-block;
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #fce7f3;
-      color: #be185d;
-      margin-bottom: 10px;
-      font-weight: 700;
+      background-color: white;
+      color: #d63384;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-weight: bold;
+      margin-bottom: 25px;
     }
 
-    .post-text {
-      margin: 0 0 10px 0;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      word-break: break-word;
-      color: #374151;
+    h1 {
+      font-size: 64px;
+      margin: 0 0 25px;
+      color: #1f2937;
     }
 
-    .post-meta {
-      font-size: 12px;
+    p {
+      font-size: 24px;
+      max-width: 700px;
+      margin: 0 auto 40px;
+      line-height: 1.5;
+      color: #4b5563;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 18px 38px;
+      border-radius: 35px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .primary {
+      background-color: #fa4aa2;
+      color: white;
+      box-shadow: 0 8px 18px rgba(236, 72, 153, 0.25);
+    }
+
+    .secondary {
+      background-color: white;
+      color: #1f2937;
+    }
+
+    .info {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 70px;
+      flex-wrap: wrap;
+    }
+
+    .info-box {
+      min-width: 160px;
+      border-right: 1px solid #f3cfe0;
+      padding: 0 25px;
+    }
+
+    .info-box:last-child {
+      border-right: none;
+    }
+
+    .info-box strong {
+      display: block;
+      font-size: 28px;
+    }
+
+    .info-box span {
+      display: block;
+      font-size: 16px;
+      margin-top: 8px;
       color: #6b7280;
     }
 
-    @media (max-width: 600px) {
-      .card {
+    @media (max-width: 700px) {
+      header {
         padding: 20px;
+        flex-direction: column;
+        gap: 15px;
       }
 
-      .category-grid {
-        grid-template-columns: repeat(2, 1fr);
+      nav a {
+        margin-left: 5px;
+        padding: 10px 14px;
       }
 
-      .page-title h1 {
-        font-size: 26px;
+      h1 {
+        font-size: 42px;
+      }
+
+      p {
+        font-size: 18px;
+      }
+
+      .hero {
+        padding: 70px 20px;
+      }
+
+      .info {
+        gap: 20px;
+      }
+
+      .info-box {
+        border-right: none;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="page">
-    <div class="container">
-      <div class="page-title">
-        <h1>Share Your Feelings</h1>
-        <p>All posts are anonymous. Please feel safe to share.</p>
-      </div>
+  <header>
+    <div class="logo">🌿 kizuna</div>
 
-      <div class="card">
-        <div class="section-label">
-          Choose a category <span class="required">*</span>
-        </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="posts.html">View Posts</a>
+      <a href="post.html" class="post-nav">Post</a>
+    </nav>
+  </header>
 
-        <div class="category-grid" id="categoryGrid">
-          <button class="category-btn" type="button" data-category="School Life">🏫 School Life</button>
-          <button class="category-btn" type="button" data-category="Friendship">🤝 Friendship</button>
-          <button class="category-btn" type="button" data-category="Academics">📚 Academics</button>
-          <button class="category-btn" type="button" data-category="Mental Health">🧠 Mental Health</button>
-          <button class="category-btn" type="button" data-category="Future">🌟 Future</button>
-          <button class="category-btn" type="button" data-category="Clubs">⚽ Clubs</button>
-          <button class="category-btn" type="button" data-category="Home">🏠 Home</button>
-          <button class="category-btn" type="button" data-category="Small Worries">🌱 Small Worries</button>
-          <button class="category-btn" type="button" data-category="Casual">☕ Casual</button>
-          <button class="category-btn" type="button" data-category="Experience">📝 Experience</button>
-        </div>
+  <main class="hero">
+    <div class="small-label">you can share your feelings</div>
 
-        <div class="section-label">
-          What would you like to share? <span class="required">*</span>
-        </div>
+    <h1>Share your worries!!</h1>
 
-        <textarea
-          id="postText"
-          maxlength="500"
-          placeholder="You can share your worries, questions, experiences, or anything on your mind."
-        ></textarea>
+    <p>
+      Kizuna is a safe place where students can share their worries
+      and support each other.
+    </p>
 
-        <div class="textarea-footer">
-          <span>All posts are anonymous</span>
-          <span><span id="charCount">0</span>/500</span>
-        </div>
-
-        <button class="submit-btn" id="submitBtn">
-          ✈ Post Anonymously
-        </button>
-
-        <div class="guideline">
-          By posting, you agree to the <a href="#">Community Guidelines</a>.
-        </div>
-
-        <div id="message" class="message"></div>
-      </div>
-
-      <div class="post-list" id="postList"></div>
+    <div class="buttons">
+      <a href="post.html" class="btn primary">Post Anonymously</a>
+      <a href="posts.html" class="btn secondary">View Posts</a>
     </div>
-  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      onSnapshot,
-      orderBy,
-      query
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    // Replace this with your own Firebase configuration.
-    // Use the firebaseConfig that you already copied from Firebase.
-    const firebaseConfig = {
-        apiKey: "AIzaSyA86h8lnn9d7fbKOgQ-oesOi7h2jliOVJc",
-      authDomain: "kizuna-anonymouse-board.firebaseapp.com",
-      projectId: "kizuna-anonymouse-board",
-      storageBucket: "kizuna-anonymouse-board.firebasestorage.app",
-      messagingSenderId: "422589461468",
-      appId: "1:422589461468:web:1a60b3a3a06afe5b3d1519",
-      measurementId: "G-LFRPHPGNP0"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const categoryButtons = document.querySelectorAll(".category-btn");
-    const postText = document.getElementById("postText");
-    const charCount = document.getElementById("charCount");
-    const submitBtn = document.getElementById("submitBtn");
-    const postList = document.getElementById("postList");
-    const messageEl = document.getElementById("message");
-
-    let selectedCategory = "";
-
-    categoryButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        categoryButtons.forEach((button) => {
-          button.classList.remove("active");
-        });
-
-        btn.classList.add("active");
-        selectedCategory = btn.dataset.category;
-      });
-    });
-
-    postText.addEventListener("input", () => {
-      charCount.textContent = postText.value.length;
-    });
-
-    function showMessage(text, type = "") {
-      messageEl.textContent = text;
-      messageEl.className = `message ${type}`;
-    }
-
-    submitBtn.addEventListener("click", async () => {
-      const text = postText.value.trim();
-
-      if (!selectedCategory) {
-        showMessage("Please choose a category.", "error");
-        return;
-      }
-
-      if (!text) {
-        showMessage("Please write something before posting.", "error");
-        return;
-      }
-
-      try {
-        submitBtn.disabled = true;
-        showMessage("Posting...", "");
-
-        await addDoc(collection(db, "worries"), {
-          category: selectedCategory,
-          text: text,
-          author: "Anonymous",
-          timestamp: new Date()
-        });
-
-        postText.value = "";
-        charCount.textContent = "0";
-        selectedCategory = "";
-
-        categoryButtons.forEach((button) => {
-          button.classList.remove("active");
-        });
-
-        showMessage("Your anonymous post has been shared.", "success");
-      } catch (error) {
-        console.error(error);
-        showMessage("Failed to post. Please try again.", "error");
-      } finally {
-        submitBtn.disabled = false;
-      }
-    });
-
-    const q = query(collection(db, "worries"), orderBy("timestamp", "desc"));
-
-    onSnapshot(q, (snapshot) => {
-      postList.innerHTML = "";
-
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-
-        const item = document.createElement("div");
-        item.className = "post-item";
-
-        const category = document.createElement("div");
-        category.className = "post-category";
-        category.textContent = data.category || "Uncategorized";
-
-        const text = document.createElement("p");
-        text.className = "post-text";
-        text.textContent = data.text || "";
-
-        const meta = document.createElement("div");
-        meta.className = "post-meta";
-        meta.textContent = "Anonymous";
-
-        item.appendChild(category);
-        item.appendChild(text);
-        item.appendChild(meta);
-
-        postList.appendChild(item);
-      });
-    });
-  </script>
-</body>
-</html>
+    
+    </div>
+  </main>
 </body>
 </html>
