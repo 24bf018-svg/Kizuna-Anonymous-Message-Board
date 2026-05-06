@@ -49,17 +49,11 @@
       color: #1f2937;
     }
 
-    .logo-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: #2f855a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 16px;
-    }
+   .logo-img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
 
     .nav {
       display: flex;
@@ -491,14 +485,14 @@
   <header class="header">
     <div class="header-inner">
       <a href="index.html" class="logo">
-        <span class="logo-icon">✤</span>
-        <span>kizuna</span>
-      </a>
+  <img src="./logo.png" class="logo-img" alt="Kizuna logo">
+  <span>kizuna</span>
+</a>
 
       <nav class="nav">
         <a href="index.html">Home</a>
         <a href="posts.html" class="active">View Posts</a>
-        <a href="index.html" class="post-link">Post</a>
+        <a href="post.html" class="post-link">Post</a>
       </nav>
     </div>
   </header>
