@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kizuna Board - Posts</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Helvetica Neue", sans-serif;
+      background: #fff7fb;
+      color: #1f2937;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .header {
+      width: 100%;
+      background: #fff7fb;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid #f3e5ee;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 24px;
+      color: #1f2937;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #2f855a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .nav a {
+      padding: 12px 18px;
+      border-radius: 14px;
+      color: #374151;
+    }
+
+    .nav a.active {
+      background: #fde7f3;
+      color: #be185d;
+    }
+
+    .nav a.post-link {
+      background: #ec4899;
+      color: white;
+      border-radius: 999px;
+      padding: 13px 26px;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 52px 20px 80px;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.2;
+    }
+
+    .title p {
+      margin: 8px 0 0;
+      color: #6b7280;
+      font-size: 16px;
+    }
+
+    .post-button {
+      background: #ec4899;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .safety-note {
+      background: #ffffff;
+      border: 1px solid #f3e5ee;
+      border-radius: 18px;
+      padding: 14px 18px;
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 32px;
+    }
+
+    .filter-btn {
+      flex: 0 0 auto;
+      border: 1px solid #e5e7eb;
+      background: white;
+      color: #6b7280;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      background: #fce7f3;
+      border-color: #f9a8d4;
+      color: #be185d;
+    }
+
+    .count-badge {
+      display: inline-flex;
+      margin-left: 6px;
+      background: #f3f4f6;
+      color: #6b7280;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 13px;
+    }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .post-card {
+      background: white;
+      border: 1px solid #f0e3ea;
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.035);
+    }
+
+    .post-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .category-pill {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .date {
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .post-text {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #374151;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-bottom: 20px;
+    }
+
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-top: 1px solid #f3e8ef;
+      padding-top: 14px;
+    }
+
+    .left-actions,
+    .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      border: none;
+      background: #f9fafb;
+      color: #6b7280;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: #fce7f3;
+      color: #be185d;
+    }
+
+    .report-btn {
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .report-btn:hover {
+      color: #dc2626;
+    }
+
+    .comments {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid #f3e8ef;
+      display: none;
+    }
+
+    .comments.open {
+      display: block;
+    }
+
+    .comment-note {
+      background: #fff7fb;
+      border: 1px solid #f3e5ee;
+      color: #6b7280;
+      padding: 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .template-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .template-btn {
+      border: 1px solid #e5e7eb;
+      background: white;
+      color: #6b7280;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .template-btn:hover {
+      background: #fce7f3;
+      color: #be185d;
+    }
+
+    .comment-input {
+      width: 100%;
+      min-height: 80px;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 12px;
+      resize: vertical;
+      font-size: 14px;
+      line-height: 1.6;
+      outline: none;
+    }
+
+    .comment-input:focus {
+      border-color: #ec4899;
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.12);
+    }
+
+    .comment-submit {
+      margin-top: 10px;
+      background: #ec4899;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .comment-list {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .comment-item {
+      background: #f9fafb;
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid #eef0f3;
+    }
+
+    .comment-text {
+      margin: 0 0 8px;
+      color: #374151;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .comment-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: #9ca3af;
+      font-size: 12px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #9ca3af;
+      padding: 60px 0;
+      font-size: 16px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+
+    .modal p {
+      margin: 0 0 18px;
+      color: #6b7280;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .modal select,
+    .modal textarea {
+      width: 100%;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .modal textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .cancel-btn {
+      border: none;
+      background: #f3f4f6;
+      color: #374151;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .submit-report-btn {
+      border: none;
+      background: #dc2626;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .message {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1f2937;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      display: none;
+      z-index: 200;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    @media (max-width: 800px) {
+      .posts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .top-row {
+        flex-direction: column;
+      }
+
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .nav {
+        width: 100%;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">✤</span>
+        <span>kizuna</span>
+      </a>
+
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="posts.html" class="active">View Posts</a>
+        <a href="index.html" class="post-link">Post</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="top-row">
+      <div class="title">
+        <h1>Community Posts</h1>
+        <p id="postCount">Loading posts...</p>
+      </div>
+
+      <button class="post-button" onclick="location.href='index.html'">
+        + Post
+      </button>
+    </div>
+
+    <div class="safety-note">
+      Please respond with kindness. This is a safe space for support, not judgment.
+      If you see something unsafe, please report it.
+    </div>
+
+    <div class="filters" id="filters"></div>
+
+    <div class="posts-grid" id="postsGrid"></div>
+
+    <div class="empty" id="emptyState" style="display: none;">
+      No posts yet.
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="reportModal">
+    <div class="modal">
+      <h2>Report</h2>
+      <p>
+        Please tell us why you are reporting this. If someone may be in immediate danger,
+        please tell a trusted adult or contact local emergency support.
+      </p>
+
+      <select id="reportReason">
+        <option value="">Choose a reason</option>
+        <option value="Harmful or bullying">Harmful or bullying</option>
+        <option value="Hate or discrimination">Hate or discrimination</option>
+        <option value="Self-harm or crisis concern">Self-harm or crisis concern</option>
+        <option value="Personal information">Personal information</option>
+        <option value="Spam">Spam</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <textarea id="reportDetails" placeholder="Add details if needed."></textarea>
+
+      <div class="modal-actions">
+        <button class="cancel-btn" id="cancelReportBtn">Cancel</button>
+        <button class="submit-report-btn" id="submitReportBtn">Submit Report</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="message" id="messageBox"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      onSnapshot,
+      orderBy,
+      query,
+      doc,
+      updateDoc,
+      increment,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Replace this with your real Firebase config.
+    const firebaseConfig = {
+  apiKey: "AIzaSyA86h8lnn9d7fbKOgQ-oesOi7h2jliOVJc",
+  authDomain: "kizuna-anonymouse-board.firebaseapp.com",
+  projectId: "kizuna-anonymouse-board",
+  storageBucket: "kizuna-anonymouse-board.firebasestorage.app",
+  messagingSenderId: "422589461468",
+  appId: "1:422589461468:web:1a60b3a3a06afe5b3d1519",
+  measurementId: "G-LFRPHPGNP0"
+};
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const postsGrid = document.getElementById("postsGrid");
+    const filtersEl = document.getElementById("filters");
+    const postCountEl = document.getElementById("postCount");
+    const emptyState = document.getElementById("emptyState");
+    const messageBox = document.getElementById("messageBox");
+
+    const reportModal = document.getElementById("reportModal");
+    const reportReason = document.getElementById("reportReason");
+    const reportDetails = document.getElementById("reportDetails");
+    const cancelReportBtn = document.getElementById("cancelReportBtn");
+    const submitReportBtn = document.getElementById("submitReportBtn");
+
+    let allPosts = [];
+    let selectedFilter = "All";
+    let reportTarget = null;
+
+    const categories = [
+      "All",
+      "School Life",
+      "Friendship",
+      "Academics",
+      "Mental Health",
+      "Mental",
+      "Future",
+      "Clubs",
+      "Home",
+      "Small Worries",
+      "Casual",
+      "Experience"
+    ];
+
+    const categoryIcons = {
+      "All": "✨",
+      "School Life": "🏫",
+      "Friendship": "🤝",
+      "Academics": "📚",
+      "Mental Health": "💚",
+      "Mental": "💚",
+      "Future": "🌟",
+      "Clubs": "⚽",
+      "Home": "🏠",
+      "Small Worries": "🌱",
+      "Casual": "☕",
+      "Experience": "🎯"
+    };
+
+    function showMessage(text) {
+      messageBox.textContent = text;
+      messageBox.classList.add("show");
+
+      setTimeout(() => {
+        messageBox.classList.remove("show");
+      }, 2500);
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return "";
+
+      let date;
+
+      if (timestamp.toDate) {
+        date = timestamp.toDate();
+      } else {
+        date = new Date(timestamp);
+      }
+
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric"
+      });
+    }
+
+    function getPostCounts() {
+      const counts = {};
+
+      categories.forEach((category) => {
+        counts[category] = 0;
+      });
+
+      counts["All"] = allPosts.length;
+
+      allPosts.forEach((post) => {
+        const category = post.category || "Uncategorized";
+
+        if (!counts[category]) {
+          counts[category] = 0;
+        }
+
+        counts[category]++;
+      });
+
+      return counts;
+    }
+
+    function renderFilters() {
+      const counts = getPostCounts();
+      filtersEl.innerHTML = "";
+
+      categories.forEach((category) => {
+        const button = document.createElement("button");
+        button.className = "filter-btn";
+
+        if (category === selectedFilter) {
+          button.classList.add("active");
+        }
+
+        const icon = categoryIcons[category] || "•";
+        const count = counts[category] || 0;
+
+        button.innerHTML = `${icon} ${category} <span class="count-badge">${count}</span>`;
+
+        button.addEventListener("click", () => {
+          selectedFilter = category;
+          renderFilters();
+          renderPosts();
+        });
+
+        filtersEl.appendChild(button);
+      });
+    }
+
+    function renderPosts() {
+      postsGrid.innerHTML = "";
+
+      let postsToShow = allPosts;
+
+      if (selectedFilter !== "All") {
+        postsToShow = allPosts.filter((post) => post.category === selectedFilter);
+      }
+
+      postCountEl.textContent = `${allPosts.length} anonymous posts`;
+
+      if (postsToShow.length === 0) {
+        emptyState.style.display = "block";
+        return;
+      }
+
+      emptyState.style.display = "none";
+
+      postsToShow.forEach((post) => {
+        const card = document.createElement("article");
+        card.className = "post-card";
+
+        const category = post.category || "Uncategorized";
+        const icon = categoryIcons[category] || "•";
+        const hearCount = post.hearCount || 0;
+        const commentCount = post.commentCount || 0;
+
+        card.innerHTML = `
+          <div class="post-top">
+            <span class="category-pill">${icon} ${category}</span>
+            <span class="date">◷ ${formatDate(post.timestamp)}</span>
+          </div>
+
+          <div class="post-text"></div>
+
+          <div class="post-actions">
+            <div class="left-actions">
+              <button class="action-btn comments-toggle">💬 Comments <span>${commentCount}</span></button>
+              <button class="action-btn hear-btn">♡ I hear you <span>${hearCount}</span></button>
+            </div>
+
+            <div class="right-actions">
+              <button class="report-btn post-report-btn">⚑ Report</button>
+            </div>
+          </div>
+
+          <div class="comments">
+            <div class="comment-note">
+              Before replying, ask yourself: Is this kind, helpful, and respectful?
+            </div>
+
+            <div class="template-row">
+              <button class="template-btn" type="button">I hear you.</button>
+              <button class="template-btn" type="button">Thank you for sharing.</button>
+              <button class="template-btn" type="button">I had a similar experience.</button>
+            </div>
+
+            <textarea class="comment-input" maxlength="500" placeholder="Write a kind and supportive reply..."></textarea>
+            <button class="comment-submit">Post Comment</button>
+
+            <div class="comment-list"></div>
+          </div>
+        `;
+
+        card.querySelector(".post-text").textContent = post.text || "";
+
+        const commentsBox = card.querySelector(".comments");
+        const commentsToggle = card.querySelector(".comments-toggle");
+        const hearBtn = card.querySelector(".hear-btn");
+        const postReportBtn = card.querySelector(".post-report-btn");
+        const commentInput = card.querySelector(".comment-input");
+        const commentSubmit = card.querySelector(".comment-submit");
+        const commentList = card.querySelector(".comment-list");
+        const templateButtons = card.querySelectorAll(".template-btn");
+
+        commentsToggle.addEventListener("click", () => {
+          commentsBox.classList.toggle("open");
+        });
+
+        hearBtn.addEventListener("click", async () => {
+          try {
+            await updateDoc(doc(db, "worries", post.id), {
+              hearCount: increment(1)
+            });
+          } catch (error) {
+            console.error(error);
+            showMessage("Could not update reaction.");
+          }
+        });
+
+        postReportBtn.addEventListener("click", () => {
+          openReportModal({
+            targetType: "post",
+            targetId: post.id,
+            postId: post.id
+          });
+        });
+
+        templateButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const current = commentInput.value.trim();
+
+            if (current) {
+              commentInput.value = `${current}\n${button.textContent}`;
+            } else {
+              commentInput.value = button.textContent;
+            }
+
+            commentInput.focus();
+          });
+        });
+
+        commentSubmit.addEventListener("click", async () => {
+          const text = commentInput.value.trim();
+
+          if (!text) {
+            showMessage("Please write a comment first.");
+            return;
+          }
+
+          try {
+            await addDoc(collection(db, "worries", post.id, "comments"), {
+              text: text,
+              author: "Anonymous",
+              timestamp: serverTimestamp()
+            });
+
+            await updateDoc(doc(db, "worries", post.id), {
+              commentCount: increment(1)
+            });
+
+            commentInput.value = "";
+            showMessage("Your comment has been posted.");
+          } catch (error) {
+            console.error(error);
+            showMessage("Failed to post comment.");
+          }
+        });
+
+        const commentsQuery = query(
+          collection(db, "worries", post.id, "comments"),
+          orderBy("timestamp", "asc")
+        );
+
+        onSnapshot(commentsQuery, (snapshot) => {
+          commentList.innerHTML = "";
+
+          snapshot.forEach((commentDoc) => {
+            const comment = commentDoc.data();
+
+            const commentItem = document.createElement("div");
+            commentItem.className = "comment-item";
+
+            const commentText = document.createElement("p");
+            commentText.className = "comment-text";
+            commentText.textContent = comment.text || "";
+
+            const commentMeta = document.createElement("div");
+            commentMeta.className = "comment-meta";
+
+            const author = document.createElement("span");
+            author.textContent = "Anonymous";
+
+            const reportCommentBtn = document.createElement("button");
+            reportCommentBtn.className = "report-btn";
+            reportCommentBtn.textContent = "⚑ Report";
+
+            reportCommentBtn.addEventListener("click", () => {
+              openReportModal({
+                targetType: "comment",
+                targetId: commentDoc.id,
+                postId: post.id
+              });
+            });
+
+            commentMeta.appendChild(author);
+            commentMeta.appendChild(reportCommentBtn);
+
+            commentItem.appendChild(commentText);
+            commentItem.appendChild(commentMeta);
+
+            commentList.appendChild(commentItem);
+          });
+        });
+
+        postsGrid.appendChild(card);
+      });
+    }
+
+    function openReportModal(target) {
+      reportTarget = target;
+      reportReason.value = "";
+      reportDetails.value = "";
+      reportModal.classList.add("open");
+    }
+
+    function closeReportModal() {
+      reportTarget = null;
+      reportModal.classList.remove("open");
+    }
+
+    cancelReportBtn.addEventListener("click", closeReportModal);
+
+    reportModal.addEventListener("click", (event) => {
+      if (event.target === reportModal) {
+        closeReportModal();
+      }
+    });
+
+    submitReportBtn.addEventListener("click", async () => {
+      if (!reportTarget) return;
+
+      const reason = reportReason.value;
+      const details = reportDetails.value.trim();
+
+      if (!reason) {
+        showMessage("Please choose a report reason.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "reports"), {
+          targetType: reportTarget.targetType,
+          targetId: reportTarget.targetId,
+          postId: reportTarget.postId,
+          reason: reason,
+          details: details,
+          status: "new",
+          timestamp: serverTimestamp()
+        });
+
+        closeReportModal();
+        showMessage("Thank you. Your report has been submitted.");
+      } catch (error) {
+        console.error(error);
+        showMessage("Failed to submit report.");
+      }
+    });
+
+    const postsQuery = query(collection(db, "worries"), orderBy("timestamp", "desc"));
+
+    onSnapshot(postsQuery, (snapshot) => {
+      allPosts = [];
+
+      snapshot.forEach((docSnap) => {
+        allPosts.push({
+          id: docSnap.id,
+          ...docSnap.data()
+        });
+      });
+
+      renderFilters();
+      renderPosts();
+    });
+  </script>
+</body>
+</html>
