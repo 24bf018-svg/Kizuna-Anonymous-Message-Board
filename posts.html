@@ -6,26 +6,10 @@
   <title>Kizuna Board - Posts</title>
 
   <style>
-    .action-btn.reacted {
-  background: #fce7f3;
-  color: #be185d;
-}
-
-.action-btn.reacted .heart-icon {
-  color: #ec4899;
-}
-
     * {
       box-sizing: border-box;
     }
 
-    .action-btn:disabled {
-  background: #f3f4f6;
-  color: #9ca3af;
-  cursor: not-allowed;
-}
-
-  
     body {
       margin: 0;
       font-family: Arial, "Helvetica Neue", sans-serif;
@@ -65,11 +49,11 @@
       color: #1f2937;
     }
 
-   .logo-img {
-  width: 38px;
-  height: 38px;
-  object-fit: contain;
-}
+    .logo-img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+    }
 
     .nav {
       display: flex;
@@ -256,6 +240,15 @@
     .action-btn:hover {
       background: #fce7f3;
       color: #be185d;
+    }
+
+    .action-btn.reacted {
+      background: #fce7f3;
+      color: #be185d;
+    }
+
+    .action-btn.reacted .heart-icon {
+      color: #ec4899;
     }
 
     .report-btn {
@@ -501,9 +494,9 @@
   <header class="header">
     <div class="header-inner">
       <a href="index.html" class="logo">
-  <img src="./logo.png" class="logo-img" alt="Kizuna logo">
-  <span>kizuna</span>
-</a>
+        <img src="./logo.png" class="logo-img" alt="Kizuna logo">
+        <span>kizuna</span>
+      </a>
 
       <nav class="nav">
         <a href="index.html">Home</a>
@@ -520,7 +513,7 @@
         <p id="postCount">Loading posts...</p>
       </div>
 
-      <button class="post-button" onclick="location.href='index.html'">
+      <button class="post-button" onclick="location.href='post.html'">
         + Post
       </button>
     </div>
@@ -583,16 +576,16 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Replace this with your real Firebase config.
     const firebaseConfig = {
-  apiKey: "AIzaSyA86h8lnn9d7fbKOgQ-oesOi7h2jliOVJc",
-  authDomain: "kizuna-anonymouse-board.firebaseapp.com",
-  projectId: "kizuna-anonymouse-board",
-  storageBucket: "kizuna-anonymouse-board.firebasestorage.app",
-  messagingSenderId: "422589461468",
-  appId: "1:422589461468:web:1a60b3a3a06afe5b3d1519",
-  measurementId: "G-LFRPHPGNP0"
-};
+      apiKey: "AIzaSyA86h8lnn9d7fbKOgQ-oesOi7h2jliOVJc",
+      authDomain: "kizuna-anonymouse-board.firebaseapp.com",
+      projectId: "kizuna-anonymouse-board",
+      storageBucket: "kizuna-anonymouse-board.firebasestorage.app",
+      messagingSenderId: "422589461468",
+      appId: "1:422589461468:web:1a60b3a3a06afe5b3d1519",
+      measurementId: "G-LFRPHPGNP0"
+    };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -756,7 +749,7 @@
             <div class="left-actions">
               <button class="action-btn comments-toggle">💬 Comments <span>${commentCount}</span></button>
               <button class="action-btn hear-btn">
-              <span class="heart-icon">♡</span> I hear you <span class="hear-count">${hearCount}</span>
+                <span class="heart-icon">♡</span> I hear you <span class="hear-count">${hearCount}</span>
               </button>
             </div>
 
@@ -798,40 +791,39 @@
           commentsBox.classList.toggle("open");
         });
 
-       const heardKey = `heard_${post.id}`;
+        const heardKey = `heard_${post.id}`;
+        const heartIcon = hearBtn.querySelector(".heart-icon");
+        const hearCountEl = hearBtn.querySelector(".hear-count");
 
-const heardKey = `heard_${post.id}`;
-const heartIcon = hearBtn.querySelector(".heart-icon");
-const hearCountEl = hearBtn.querySelector(".hear-count");
+        if (localStorage.getItem(heardKey)) {
+          hearBtn.classList.add("reacted");
+          heartIcon.textContent = "♥";
+        }
 
-if (localStorage.getItem(heardKey)) {
-  hearBtn.classList.add("reacted");
-  heartIcon.textContent = "♥";
-}
+        hearBtn.addEventListener("click", async () => {
+          if (localStorage.getItem(heardKey)) {
+            showMessage("You already reacted to this post.");
+            return;
+          }
 
-hearBtn.addEventListener("click", async () => {
-  if (localStorage.getItem(heardKey)) {
-    showMessage("You already reacted to this post.");
-    return;
-  }
+          try {
+            await updateDoc(doc(db, "worries", post.id), {
+              hearCount: increment(1)
+            });
 
-  try {
-    await updateDoc(doc(db, "worries", post.id), {
-      hearCount: increment(1)
-    });
+            localStorage.setItem(heardKey, "true");
 
-    localStorage.setItem(heardKey, "true");
+            hearBtn.classList.add("reacted");
+            heartIcon.textContent = "♥";
+            hearCountEl.textContent = hearCount + 1;
 
-    hearBtn.classList.add("reacted");
-    heartIcon.textContent = "♥";
-    hearCountEl.textContent = hearCount + 1;
+            showMessage("Thank you for showing support.");
+          } catch (error) {
+            console.error(error);
+            showMessage("Could not update reaction.");
+          }
+        });
 
-    showMessage("Thank you for showing support.");
-  } catch (error) {
-    console.error(error);
-    showMessage("Could not update reaction.");
-  }
-});
         postReportBtn.addEventListener("click", () => {
           openReportModal({
             targetType: "post",
