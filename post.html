@@ -9,7 +9,10 @@
     * {
       box-sizing: border-box;
     }
-
+    .char-warning {
+  color: #dc2626;
+  font-weight: bold;
+}
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -331,8 +334,15 @@
     });
 
     postText.addEventListener("input", () => {
-      charCount.textContent = postText.value.length;
-    });
+  const length = postText.value.length;
+  charCount.textContent = length;
+
+  if (length >= 450) {
+    charCount.classList.add("char-warning");
+  } else {
+    charCount.classList.remove("char-warning");
+  }
+});
 
     function showMessage(text, type) {
       message.textContent = text;
@@ -374,6 +384,10 @@
         });
 
         showMessage("Your anonymous post has been shared.", "success");
+
+        setTimeout(() => {
+  window.location.href = "posts.html";
+}, 1200);
       } catch (error) {
         console.error(error);
         showMessage("Failed to post. Please try again.", "error");
