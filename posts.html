@@ -10,6 +10,13 @@
       box-sizing: border-box;
     }
 
+    .action-btn:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+  
     body {
       margin: 0;
       font-family: Arial, "Helvetica Neue", sans-serif;
@@ -780,17 +787,34 @@
           commentsBox.classList.toggle("open");
         });
 
-        hearBtn.addEventListener("click", async () => {
-          try {
-            await updateDoc(doc(db, "worries", post.id), {
-              hearCount: increment(1)
-            });
-          } catch (error) {
-            console.error(error);
-            showMessage("Could not update reaction.");
-          }
-        });
+       const heardKey = `heard_${post.id}`;
 
+if (localStorage.getItem(heardKey)) {
+  hearBtn.disabled = true;
+  hearBtn.textContent = `♥ I hear you ${hearCount}`;
+}
+
+hearBtn.addEventListener("click", async () => {
+  if (localStorage.getItem(heardKey)) {
+    showMessage("You already reacted to this post.");
+    return;
+  }
+
+  try {
+    await updateDoc(doc(db, "worries", post.id), {
+      hearCount: increment(1)
+    });
+
+    localStorage.setItem(heardKey, "true");
+    hearBtn.disabled = true;
+    hearBtn.textContent = `♥ I hear you ${hearCount + 1}`;
+
+    showMessage("Thank you for showing support.");
+  } catch (error) {
+    console.error(error);
+    showMessage("Could not update reaction.");
+  }
+});
         postReportBtn.addEventListener("click", () => {
           openReportModal({
             targetType: "post",
