@@ -6,6 +6,15 @@
   <title>Kizuna Board - Posts</title>
 
   <style>
+    .action-btn.reacted {
+  background: #fce7f3;
+  color: #be185d;
+}
+
+.action-btn.reacted .heart-icon {
+  color: #ec4899;
+}
+
     * {
       box-sizing: border-box;
     }
@@ -746,7 +755,9 @@
           <div class="post-actions">
             <div class="left-actions">
               <button class="action-btn comments-toggle">💬 Comments <span>${commentCount}</span></button>
-              <button class="action-btn hear-btn">♡ I hear you <span>${hearCount}</span></button>
+              <button class="action-btn hear-btn">
+              <span class="heart-icon">♡</span> I hear you <span class="hear-count">${hearCount}</span>
+              </button>
             </div>
 
             <div class="right-actions">
@@ -789,9 +800,13 @@
 
        const heardKey = `heard_${post.id}`;
 
+const heardKey = `heard_${post.id}`;
+const heartIcon = hearBtn.querySelector(".heart-icon");
+const hearCountEl = hearBtn.querySelector(".hear-count");
+
 if (localStorage.getItem(heardKey)) {
-  hearBtn.disabled = true;
-  hearBtn.textContent = `♥ I hear you ${hearCount}`;
+  hearBtn.classList.add("reacted");
+  heartIcon.textContent = "♥";
 }
 
 hearBtn.addEventListener("click", async () => {
@@ -806,8 +821,10 @@ hearBtn.addEventListener("click", async () => {
     });
 
     localStorage.setItem(heardKey, "true");
-    hearBtn.disabled = true;
-    hearBtn.textContent = `♥ I hear you ${hearCount + 1}`;
+
+    hearBtn.classList.add("reacted");
+    heartIcon.textContent = "♥";
+    hearCountEl.textContent = hearCount + 1;
 
     showMessage("Thank you for showing support.");
   } catch (error) {
